@@ -32,12 +32,15 @@
               <ul class="global-nav__list clearfix">
 
                 <li><a href="<?php echo esc_url(home_url()); ?>"><span class="icon icon-home"></span>HOME</a></li>
-                <li><a href="<?php echo esc_url(home_url('/news')); ?>"><span class="icon icon-news"></span>NEWS</a></li>
+                <?php if (term_exists( 'news', 'category')) : ?>
+                <li><a href="<?php echo esc_url(get_term_link( 'news', 'category' )); ?>"><span class="icon icon-news"></span>NEWS</a></li>
+                <?php endif; ?>
                 <li><a href="<?php echo esc_url(home_url('/menu')); ?>"><span class="icon icon-menu"></span>MENU</a></li>
                 <li><a href="<?php echo esc_url(home_url('/access')); ?>"><span class="icon icon-access"></span>ACCESS</a></li>
                 <li><a href="<?php echo esc_url(home_url('/gallery')); ?>"><span class="icon icon-gallery"></span>GALLERY</a></li>
-                <li><a href="<?php echo esc_url(home_url('/blog')); ?>"><span class="icon icon-blog"></span>BLOG</a></li>
-
+                <?php if (term_exists( 'blog', 'category')) : ?>
+                <li><a href="<?php echo esc_url(get_term_link( 'blog', 'category' )); ?>"><span class="icon icon-blog"></span>BLOG</a></li>
+                <?php endif; ?>
               </ul>
             </div>
           </nav>
@@ -45,12 +48,48 @@
       </div>
     </div>
 
-    <div class="mainvisual ">
+    <div class="mainvisual <?php if (!is_front_page()) { echo 'mainvisual--subpage'; } ?>">
       <div class="container page-title">
-
+        <?php if(is_front_page()): ?>
         <h2 class="font-serif text-right"><img src="<?php echo esc_url(get_template_directory_uri()); ?>/img/img-home-mainvisual-effect.png" alt="HOME VISUAL" /></h2>
-
+        <?php else: ?>
+        <h2 class="page-title--subpage font-serif">
+          <?php
+          if (is_single() || is_page()):
+            the_title();
+          elseif(is_search()):
+            echo '「'.esc_attr(get_search_query()).'」の検索結果';
+          elseif(is_404()):
+            echo 'ページが見つかりませんでした。';
+          else:
+            the_archive_title();
+          endif;
+          ?>
+        </h2>
+        <?php endif; ?>
+        
       </div>
     </div>
+    <?php if (!is_front_page()): ?>
+    <nav id="breadcrumb-nav" class="container">
+      <ul class="breadcrumb">
+        <li>
+          <a href="<?php esc_url(home_url()); ?>"><span class="glyphicon glyphicon-home"></span>HOME</a>
+        </li>
+        <li>
+          <?php 
+          if (is_single() || is_page()):
+            the_title();
+          elseif(is_search()):
+            echo '「'.esc_attr(get_search_query()).'」の検索結果';
+          elseif(is_404()):
+            echo '404 error not found';
+          else:
+            the_archive_title();
+          endif;
+          ?>
+      </ul>
+    </nav>
+    <?php endif; ?>
 
   </header>
